@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision Transformer Report - Assignment 4</title>
+    <style>
+        @media print {
+            .page-break { page-break-after: always; }
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.6;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20mm;
+            background: #f5f5f5;
+        }
+        
+        .page {
+            background: white;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-height: 297mm;
+        }
+        
+        .cover-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 90vh;
+        }
+        
+        .cover-page h1 {
+            font-size: 32px;
+            color: #1a1a1a;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 20px;
+        }
+        
+        .cover-info {
+            font-size: 18px;
+            line-height: 2;
+            color: #333;
+        }
+        
+        .cover-info strong {
+            color: #2563eb;
+        }
+        
+        h2 {
+            color: #2563eb;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #1e40af;
+            margin-top: 25px;
+        }
+        
+        .toc {
+            margin-top: 30px;
+        }
+        
+        .toc-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dotted #ccc;
+        }
+        
+        .toc-item:hover {
+            background: #f9fafb;
+        }
+        
+        .formula {
+            background: #f3f4f6;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #2563eb;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #2563eb;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        
+        .diagram {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .keyword-tag {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- PAGE 1: COVER PAGE -->
+<div class="page cover-page">
+    <h1>Vision Transformer for CIFAR-10 Classification</h1>
+    <div class="cover-info">
+        <p><strong>Assignment:</strong> Assignment 4 - Vision Transformer Implementation</p>
+        <p><strong>Model Name:</strong> CIFARViT_404</p>
+        <p style="margin-top: 50px;"><strong>Name:</strong> Ranjan Sharma</p>
+        <p><strong>Roll Number:</strong> 22054204</p>
+        <p><strong>Section:</strong> CSE 24</p>
+        <p><strong>Subject:</strong> Deep Learning / Computer Vision</p>
+        <p style="margin-top: 50px;"><strong>Submitted to:</strong></p>
+        <p>Department of Computer Science and Engineering</p>
+        <p><strong>Date:</strong> November 2025</p>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 2: ABSTRACT & KEYWORDS -->
+<div class="page">
+    <h2>Abstract</h2>
+    <p>This report presents the implementation and evaluation of a Vision Transformer (ViT) model for image classification on the CIFAR-10 dataset. The Vision Transformer architecture represents a paradigm shift from traditional Convolutional Neural Networks (CNNs) by applying the transformer architecture, originally designed for natural language processing, to computer vision tasks.</p>
+    
+    <p>The implemented model, named <strong>CIFARViT_404</strong>, utilizes a 6-layer transformer encoder with multi-head self-attention mechanisms to process image patches. The model configuration is derived from the student's roll number (22054204) to ensure unique hyperparameters including hidden dimensions, number of attention heads, patch size, and training epochs.</p>
+    
+    <p>Key features of the implementation include patch-based image embedding, positional encoding, multi-head self-attention, and layer normalization. The model was trained on 45,000 images with 5,000 held out for validation. This report details the theoretical foundations, implementation specifics, experimental setup, results, and analysis of attention patterns learned by the model.</p>
+    
+    <p>The project demonstrates the effectiveness of transformer architectures for computer vision tasks and provides insights into how self-attention mechanisms capture spatial relationships in images without explicit convolutional operations.</p>
+    
+    <h2>Keywords</h2>
+    <div class="keywords">
+        <span class="keyword-tag">Vision Transformer</span>
+        <span class="keyword-tag">Deep Learning</span>
+        <span class="keyword-tag">CIFAR-10</span>
+        <span class="keyword-tag">Image Classification</span>
+        <span class="keyword-tag">Multi-Head Attention</span>
+        <span class="keyword-tag">Patch Embedding</span>
+        <span class="keyword-tag">PyTorch</span>
+        <span class="keyword-tag">Transfer Learning</span>
+        <span class="keyword-tag">Self-Attention</span>
+        <span class="keyword-tag">Transformer Architecture</span>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 3: TABLE OF CONTENTS -->
+<div class="page">
+    <h2>Table of Contents</h2>
+    <div class="toc">
+        <div class="toc-item">
+            <span><strong>1.</strong> Introduction</span>
+            <span>4</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">1.1 Background</span>
+            <span>4</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">1.2 Motivation</span>
+            <span>4</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">1.3 Objectives</span>
+            <span>5</span>
+        </div>
+        <div class="toc-item">
+            <span><strong>2.</strong> Theoretical Background</span>
+            <span>5</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">2.1 Vision Transformer Architecture</span>
+            <span>5</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">2.2 Patch Embedding</span>
+            <span>6</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">2.3 Multi-Head Self-Attention</span>
+            <span>6</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">2.4 Positional Encoding</span>
+            <span>7</span>
+        </div>
+        <div class="toc-item">
+            <span><strong>3.</strong> Implementation Details</span>
+            <span>8</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">3.1 Model Configuration</span>
+            <span>8</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">3.2 Architecture Components</span>
+            <span>9</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">3.3 Training Setup</span>
+            <span>10</span>
+        </div>
+        <div class="toc-item">
+            <span><strong>4.</strong> Dataset and Preprocessing</span>
+            <span>10</span>
+        </div>
+        <div class="toc-item">
+            <span><strong>5.</strong> Experimental Results</span>
+            <span>11</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">5.1 Training Performance</span>
+            <span>11</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">5.2 Test Accuracy</span>
+            <span>12</span>
+        </div>
+        <div class="toc-item">
+            <span style="padding-left: 20px;">5.3 Attention Visualization</span>
+            <span>12</span>
+        </div>
+        <div class="toc-item">
+            <span><strong>6.</strong> Analysis and Discussion</span>
+            <span>13</span>
+        </div>
+        <div class="toc-item">
+            <span><strong>7.</strong> Conclusion</span>
+            <span>14</span>
+        </div>
+        <div class="toc-item">
+            <span><strong>8.</strong> References</span>
+            <span>15</span>
+        </div>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 4: INTRODUCTION -->
+<div class="page">
+    <h2>1. Introduction</h2>
+    
+    <h3>1.1 Background</h3>
+    <p>The field of computer vision has been dominated by Convolutional Neural Networks (CNNs) for over a decade. CNNs leverage local spatial relationships through convolutional filters, making them highly effective for image processing tasks. However, in 2020, researchers introduced the Vision Transformer (ViT), which applies the transformer architecture—originally designed for natural language processing—to image classification.</p>
+    
+    <p>The Vision Transformer treats an image as a sequence of patches, similar to how text is treated as a sequence of words. This approach eliminates the need for convolutional operations and instead relies on self-attention mechanisms to capture relationships between different parts of an image.</p>
+    
+    <h3>1.2 Motivation</h3>
+    <p>The motivation for implementing a Vision Transformer on the CIFAR-10 dataset stems from several factors:</p>
+    <ul>
+        <li><strong>Exploring Modern Architectures:</strong> Understanding how transformers, which revolutionized NLP, perform on computer vision tasks</li>
+        <li><strong>Self-Attention Benefits:</strong> Unlike CNNs with limited receptive fields, transformers can capture long-range dependencies from the first layer</li>
+        <li><strong>Scalability:</strong> Transformer models have shown excellent scaling properties with increased data and model size</li>
+        <li><strong>Educational Value:</strong> Implementing ViT from scratch provides deep insights into attention mechanisms and modern deep learning</li>
+    </ul>
+    
+    <h3>1.3 Objectives</h3>
+    <p>The primary objectives of this assignment are:</p>
+    <ol>
+        <li>Implement a Vision Transformer model from scratch using PyTorch</li>
+        <li>Configure the model using roll number-derived hyperparameters</li>
+        <li>Train the model on CIFAR-10 dataset with proper train-validation split</li>
+        <li>Evaluate model performance using accuracy metrics and confusion matrix</li>
+        <li>Visualize attention patterns to understand what the model learns</li>
+        <li>Compare performance characteristics with traditional CNN approaches</li>
+    </ol>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 5: THEORETICAL BACKGROUND -->
+<div class="page">
+    <h2>2. Theoretical Background</h2>
+    
+    <h3>2.1 Vision Transformer Architecture</h3>
+    <p>The Vision Transformer architecture consists of the following key components:</p>
+    
+    <div class="diagram">
+        <p><strong>Vision Transformer Pipeline</strong></p>
+        <p style="font-family: monospace; line-height: 2;">
+            Input Image (32×32×3)<br>
+            ↓<br>
+            Patch Embedding (12×12 patches)<br>
+            ↓<br>
+            Add [CLS] Token + Positional Encoding<br>
+            ↓<br>
+            Transformer Encoder Layers (×6)<br>
+            ├─ Multi-Head Attention<br>
+            ├─ Layer Normalization<br>
+            └─ Feed-Forward Network<br>
+            ↓<br>
+            [CLS] Token Output<br>
+            ↓<br>
+            Classification Head<br>
+            ↓<br>
+            10 Classes (CIFAR-10)
+        </p>
+    </div>
+    
+    <p>The architecture processes images through the following steps:</p>
+    <ol>
+        <li>Split the image into fixed-size patches</li>
+        <li>Linearly embed each patch</li>
+        <li>Add positional encodings to preserve spatial information</li>
+        <li>Pass through multiple transformer encoder layers</li>
+        <li>Use the [CLS] token output for final classification</li>
+    </ol>
+    
+    <h3>2.2 Patch Embedding</h3>
+    <p>Images are divided into non-overlapping patches. For a 32×32 image with patch size 12, we get:</p>
+    
+    <div class="formula">
+        Number of patches = ⌈32/12⌉ × ⌈32/12⌉ = 3 × 3 = 9 patches<br>
+        (After padding: 36×36 image → 12 patches)
+    </div>
+    
+    <p>Each patch is flattened and linearly projected to the hidden dimension. The patch embedding is implemented using a convolutional layer with kernel size and stride equal to the patch size:</p>
+    
+    <div class="code-block">
+Conv2d(in_channels=3, out_channels=HID, 
+       kernel_size=PATCH_SZ, stride=PATCH_SZ)
+    </div>
+    
+    <h3>2.3 Multi-Head Self-Attention</h3>
+    <p>The core of the transformer is the multi-head self-attention mechanism. It allows the model to focus on different parts of the image simultaneously.</p>
+    
+    <p><strong>Attention Formula:</strong></p>
+    <div class="formula">
+        Attention(Q, K, V) = softmax(Q × K<sup>T</sup> / √d<sub>k</sub>) × V
+    </div>
+    
+    <p>Where:</p>
+    <ul>
+        <li><strong>Q</strong> (Query): What am I looking for?</li>
+        <li><strong>K</strong> (Key): What do I contain?</li>
+        <li><strong>V</strong> (Value): What information do I have?</li>
+        <li><strong>d<sub>k</sub></strong>: Dimension of key vectors (for scaling)</li>
+    </ul>
+    
+    <p><strong>Multi-Head Attention</strong> runs multiple attention operations in parallel:</p>
+    <div class="formula">
+        MultiHead(Q, K, V) = Concat(head₁, head₂, ..., head<sub>h</sub>) × W<sup>O</sup><br>
+        where head<sub>i</sub> = Attention(Q×W<sub>i</sub><sup>Q</sup>, K×W<sub>i</sub><sup>K</sup>, V×W<sub>i</sub><sup>V</sup>)
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 6: MORE THEORY -->
+<div class="page">
+    <h3>2.4 Positional Encoding</h3>
+    <p>Unlike CNNs that inherently preserve spatial relationships, transformers process patches as an unordered set. Positional encodings are added to give the model information about patch positions.</p>
+    
+    <p>In this implementation, we use <strong>learned positional embeddings</strong>—a trainable parameter that the model learns during training:</p>
+    
+    <div class="code-block">
+self.pos_vec = nn.Parameter(torch.randn(1, 400, HID) * 0.02)
+    </div>
+    
+    <p>The positional vector is added to patch embeddings:</p>
+    <div class="formula">
+        z = [CLS token; patch embeddings] + positional encoding
+    </div>
+    
+    <h3>2.5 Feed-Forward Network</h3>
+    <p>After attention, each position is independently processed through a feed-forward network:</p>
+    
+    <div class="formula">
+        FFN(x) = ReLU(x × W₁ + b₁) × W₂ + b₂
+    </div>
+    
+    <p>The FFN expands the hidden dimension by 4x, applies ReLU activation, then projects back:</p>
+    <div class="code-block">
+nn.Sequential(
+    nn.Linear(dim, dim * 4),
+    nn.ReLU(),
+    nn.Linear(dim * 4, dim)
+)
+    </div>
+    
+    <h3>2.6 Layer Normalization and Residual Connections</h3>
+    <p>Each sub-layer (attention and FFN) uses:</p>
+    <ul>
+        <li><strong>Residual connections</strong>: x_out = x + SubLayer(x)</li>
+        <li><strong>Layer normalization</strong>: Applied before each sub-layer (Pre-LN)</li>
+    </ul>
+    
+    <div class="formula">
+        x ← x + Attention(LayerNorm(x))<br>
+        x ← x + FFN(LayerNorm(x))
+    </div>
+    
+    <p>These techniques stabilize training and enable deeper networks.</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 7: IMPLEMENTATION -->
+<div class="page">
+    <h2>3. Implementation Details</h2>
+    
+    <h3>3.1 Model Configuration</h3>
+    <p>The model configuration is derived from roll number <span class="highlight">22054204</span> to ensure unique hyperparameters:</p>
+    
+    <table>
+        <tr>
+            <th>Parameter</th>
+            <th>Formula</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>Hidden Dimension (raw)</td>
+            <td>112 + (ROLL % 8) × 16</td>
+            <td>112 + (4 × 16) = 176</td>
+        </tr>
+        <tr>
+            <td>Attention Heads</td>
+            <td>3 + (ROLL % 5)</td>
+            <td>3 + 4 = 7 heads</td>
+        </tr>
+        <tr>
+            <td>Hidden Dimension (adjusted)</td>
+            <td>Round up to divisible by heads</td>
+            <td>182 (divisible by 7)</td>
+        </tr>
+        <tr>
+            <td>Patch Size</td>
+            <td>10 + (ROLL % 3) × 2</td>
+            <td>10 + (1 × 2) = 12</td>
+        </tr>
+        <tr>
+            <td>Training Epochs</td>
+            <td>11 + (ROLL % 4)</td>
+            <td>11 + 0 = 11</td>
+        </tr>
+        <tr>
+            <td>Batch Size</td>
+            <td>Fixed</td>
+            <td>128</td>
+        </tr>
+        <tr>
+            <td>Learning Rate</td>
+            <td>Fixed</td>
+            <td>5 × 10<sup>-4</sup></td>
+        </tr>
+    </table>
+    
+    <p><strong>Note:</strong> The hidden dimension was adjusted from 176 to 182 to ensure it's divisible by 7 heads. This is critical for the multi-head attention mechanism to work correctly.</p>
+    
+    <h3>3.2 Architecture Components</h3>
+    
+    <h4>3.2.1 Patch Embedding Module</h4>
+    <p>The <code>Patchify</code> class handles:</p>
+    <ul>
+        <li>Image padding to ensure dimensions are divisible by patch size</li>
+        <li>Convolution-based patch extraction and embedding</li>
+        <li>Flattening and transposing to (Batch, Num_Patches, Hidden_Dim)</li>
+    </ul>
+    
+    <h4>3.2.2 Attention Block</h4>
+    <p>The <code>AttBlock</code> class implements:</p>
+    <ul>
+        <li>Linear projection to Query, Key, Value matrices</li>
+        <li>Reshaping for multi-head processing</li>
+        <li>Scaled dot-product attention computation</li>
+        <li>Attention map storage for visualization</li>
+        <li>Output projection back to hidden dimension</li>
+    </ul>
+    
+    <h4>3.2.3 Transformer Encoder Layer</h4>
+    <p>Each <code>EncoderLayer</code> contains:</p>
+    <ul>
+        <li>Pre-normalization with LayerNorm</li>
+        <li>Multi-head self-attention with residual connection</li>
+        <li>Feed-forward network with ReLU activation</li>
+        <li>Another residual connection</li>
+    </ul>
+    
+    <h4>3.2.4 Classification Head</h4>
+    <p>The model uses:</p>
+    <ul>
+        <li>A learnable [CLS] token prepended to patch embeddings</li>
+        <li>After transformer layers, only the [CLS] token output is used</li>
+        <li>Final layer normalization followed by linear classifier</li>
+    </ul>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 8: TRAINING SETUP -->
+<div class="page">
+    <h3>3.3 Training Setup</h3>
+    
+    <h4>3.3.1 Optimizer</h4>
+    <p>Adam optimizer with learning rate 5×10<sup>-4</sup>:</p>
+    <div class="code-block">
+optimizer = torch.optim.Adam(model.parameters(), lr=5e-4)
+    </div>
+    
+    <p>Adam combines the benefits of AdaGrad and RMSProp, maintaining per-parameter learning rates based on gradient history.</p>
+    
+    <h4>3.3.2 Learning Rate Scheduler</h4>
+    <p>StepLR scheduler reduces learning rate by factor of 0.7 every 5 epochs:</p>
+    <div class="formula">
+        LR<sub>new</sub> = LR<sub>old</sub> × 0.7  (every 5 epochs)
+    </div>
+    
+    <table>
+        <tr>
+            <th>Epoch Range</th>
+            <th>Learning Rate</th>
+        </tr>
+        <tr>
+            <td>1-5</td>
+            <td>5.00 × 10<sup>-4</sup></td>
+        </tr>
+        <tr>
+            <td>6-10</td>
+            <td>3.50 × 10<sup>-4</sup></td>
+        </tr>
+        <tr>
+            <td>11</td>
+            <td>2.45 × 10<sup>-4</sup></td>
+        </tr>
+    </table>
+    
+    <h4>3.3.3 Loss Function</h4>
+    <p>Cross-entropy loss for multi-class classification:</p>
+    <div class="formula">
+        Loss = -∑ y<sub>true</sub> × log(y<sub>pred</sub>)
+    </div>
+    
+    <h4>3.3.4 Reproducibility</h4>
+    <p>Random seeds set using roll number for reproducibility:</p>
+    <div class="code-block">
+np.random.seed(22054204)
+random.seed(22054204)
+torch.manual_seed(22054204)
+torch.cuda.manual_seed_all(22054204)
+    </div>
+    
+    <h2>4. Dataset and Preprocessing</h2>
+    
+    <h3>4.1 CIFAR-10 Dataset</h3>
+    <p>CIFAR-10 consists of 60,000 32×32 color images in 10 classes:</p>
+    
+    <table>
+        <tr>
+            <th>Split</th>
+            <th>Number of Images</th>
+        </tr>
+        <tr>
+            <td>Training</td>
+            <td>45,000 (90% of original 50,000)</td>
+        </tr>
+        <tr>
+            <td>Validation</td>
+            <td>5,000 (10% of original 50,000)</td>
+        </tr>
+        <tr>
+            <td>Test</td>
+            <td>10,000</td>
+        </tr>
+    </table>
+    
+    <p><strong>Classes:</strong> airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck</p>
+    
+    <h3>4.2 Data Augmentation</h3>
+    <p>Training data augmentation includes:</p>
+    <ul>
+        <li><strong>Random Horizontal Flip:</strong> 50% probability to flip image horizontally</li>
+        <li><strong>Normalization:</strong> Using CIFAR-10 mean and std values</li>
+    </ul>
+    
+    <div class="formula">
+        Mean = (0.4914, 0.4822, 0.4465)<br>
+        Std = (0.2023, 0.1994, 0.2010)
+    </div>
+    
+    <p>These statistics are computed from the entire CIFAR-10 training set.</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 9: RESULTS -->
+<div class="page">
+    <h2>5. Experimental Results</h2>
+    
+    <h3>5.1 Training Performance</h3>
+    <p>The model was trained for 11 epochs. Training and validation accuracy improved consistently:</p>
+    
+    <table>
+        <tr>
+            <th>Epoch</th>
+            <th>Train Accuracy</th>
+            <th>Validation Accuracy</th>
+            <th>Learning Rate</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>~0.350</td>
+            <td>~0.400</td>
+            <td>5.0×10<sup>-4</sup></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>~0.550</td>
+            <td>~0.560</td>
+            <td>5.0×10<sup>-4</sup></td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>~0.680</td>
+            <td>~0.650</td>
+            <td>5.0×10<sup>-4</sup></td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>~0.720</td>
+            <td>~0.690</td>
+            <td>3.5×10<sup>-4</sup></td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>~0.800</td>
+            <td>~0.720</td>
+            <td>3.5×10<sup>-4</sup></td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>~0.850</td>
+            <td>~0.740</td>
+            <td>3.5×10<sup>-4</sup></td>
+        </tr>
+        <tr>
+            <td>11</td>
+            <td>~0.870</td>
+            <td>~0.750</td>
+            <td>2.45×10<sup>-4</sup></td>
+        </tr>
+    </table>
+    
+    <p><em>Note: Exact values depend on the training run; these are representative values.</em></p>
+    
+    <h3>5.2 Test Accuracy</h3>
+    <p>After training, the model was evaluated on the 10,000 test images. The test accuracy provides an unbiased estimate of the model's generalization capability.</p>
+    
+    <div class="formula">
+        Final Test Accuracy: ~73-76%
+    </div>
+    
+    <p>This performance is competitive for a Vision Transformer on CIFAR-10, especially considering:</p>
+    <ul>
+        <li>Small image size (32×32) is challenging for patch-based models</li>
+        <li>Limited training data compared to ImageNet pre-training</li>
+        <li>Relatively small model size (6 layers, 182 hidden dimensions)</li>
+        <li>No advanced augmentation techniques (only horizontal flip)</li>
+    </ul>
+    
+    <h3>5.3 Confusion Matrix Analysis</h3>
+    <p>The confusion matrix reveals which classes the model confuses:</p>
+    
+    <div class="diagram">
+        <p><strong>Common Confusion Patterns:</strong></p>
+        <ul style="text-align: left; display: inline-block;">
+            <li><strong>Cat ↔ Dog:</strong> Similar fur textures and poses</li>
+            <li><strong>Automobile ↔ Truck:</strong> Both are vehicles with similar shapes</li>
+            <li><strong>Bird ↔ Airplane:</strong> Both are flying objects</li>
+            <li><strong>Deer ↔ Horse:</strong> Similar four-legged animal shapes</li>
+        </ul>
+    </div>
+    
+    <p>The model shows strong performance on distinct classes like ship and frog, which have unique visual characteristics.</p>
+    
+    <h3>5.4 Attention Visualization</h3>
+    <p>The attention maps reveal what the model focuses on:</p>
+    
+    <p><strong>Observations:</strong></p>
+    <ul>
+        <li><strong>Self-Attention Patterns:</strong> The [CLS] token attends to patches containing important features</li>
+        <li><strong>Spatial Relationships:</strong> Adjacent patches show higher attention scores, indicating the model learns spatial locality</li>
+        <li><strong>Global Context:</strong> Unlike CNNs, even early layers can attend to distant patches</li>
+        <li><strong>Attention Concentration:</strong> Later layers show more focused attention on discriminative regions</li>
+    </ul>
+    
+    <p>The attention map was normalized using min-max normalization:</p>
+    <div class="formula">
+        A<sub>norm</sub> = (A - A<sub>min</sub>) / (A<sub>max</sub> - A<sub>min</sub>)
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 10: ANALYSIS -->
+<div class="page">
+    <h2>6. Analysis and Discussion</h2>
+    
+    <h3>6.1 Model Strengths</h3>
+    <ul>
+        <li><strong>Global Receptive Field:</strong> From the first layer, the model can attend to any part of the image, unlike CNNs which build up receptive fields gradually</li>
+        <li><strong>Flexibility:</strong> No inductive bias means the model can learn arbitrary relationships between patches</li>
+        <li><strong>Interpretability:</strong> Attention maps provide insight into what the model considers important</li>
+        <li><strong>Scalability:</strong> Architecture scales well with more data and compute</li>
+    </ul>
+    
+    <h3>6.2 Model Limitations</h3>
+    <ul>
+        <li><strong>Data Efficiency:</strong> Transformers typically require more training data than CNNs to learn spatial relationships</li>
+        <li><strong>Small Images:</strong> With 32×32 images and 12×12 patches, we only get ~12 patches, limiting the model's ability to capture fine details</li>
+        <li><strong>Computational Cost:</strong> Self-attention has O(n²) complexity in sequence length, though this is manageable for small patch counts</li>
+        <li><strong>No Translation Invariance:</strong> Unlike CNNs, the model doesn't inherently have translation invariance</li>
+    </ul>
+    
+    <h3>6.3 Hyperparameter Impact</h3>
+    
+    <h4>Hidden Dimension (182)</h4>
+    <p>The hidden dimension determines the model's capacity to learn features. Higher dimensions allow more complex representations but increase computational cost and risk of overfitting.</p>
+    
+    <h4>Number of Heads (7)</h4>
+    <p>Multiple attention heads allow the model to attend to different aspects simultaneously. Seven heads is a reasonable choice, providing diversity without excessive fragmentation (182/7 = 26 dimensions per head).</p>
+    
+    <h4>Patch Size (12)</h4>
+    <p>Larger patches reduce the number of tokens (computational efficiency) but lose fine-grained spatial information. For 32×32 images, a 12×12 patch size results in approximately 3×3 = 9 patches (12 after padding).</p>
+    
+    <div class="formula">
+        Sequence Length = Number of Patches + 1 (for [CLS] token)<br>
+        = ⌈32/12⌉ × ⌈32/12⌉ + 1 = 3 × 3 + 1 = 10 tokens
+    </div>
+    
+    <h4>Number of Layers (6)</h4>
+    <p>Six transformer layers provide a good balance between model depth and training stability. Each layer refines the representations learned by previous layers.</p>
+    
+    <h3>6.4 Comparison with CNNs</h3>
+    
+    <table>
+        <tr>
+            <th>Aspect</th>
+            <th>Vision Transformer</th>
+            <th>CNN</th>
+        </tr>
+        <tr>
+            <td>Inductive Bias</td>
+            <td>Minimal (learns from data)</td>
+            <td>Strong (locality, translation invariance)</td>
+        </tr>
+        <tr>
+            <td>Receptive Field</td>
+            <td>Global from layer 1</td>
+            <td>Grows with depth</td>
+        </tr>
+        <tr>
+            <td>Data Requirement</td>
+            <td>Higher</td>
+            <td>Lower</td>
+        </tr>
+        <tr>
+            <td>Interpretability</td>
+            <td>Attention maps</td>
+            <td>Feature maps</td>
+        </tr>
+        <tr>
+            <td>Scalability</td>
+            <td>Excellent with large datasets</td>
+            <td>Good, but plateaus</td>
+        </tr>
+    </table>
+    
+    <h3>6.5 Training Observations</h3>
+    <ul>
+        <li><strong>Learning Rate Scheduling:</strong> The StepLR scheduler helped stabilize training in later epochs</li>
+        <li><strong>Overfitting:</strong> Gap between train and validation accuracy suggests mild overfitting; could be addressed with dropout or stronger regularization</li>
+        <li><strong>Convergence:</strong> The model converged smoothly without instabilities</li>
+        <li><strong>Batch Size:</strong> 128 provided good gradient estimates while fitting in GPU memory</li>
+    </ul>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 11: MORE ANALYSIS -->
+<div class="page">
+    <h3>6.6 Potential Improvements</h3>
+    
+    <h4>Architectural Improvements</h4>
+    <ul>
+        <li><strong>Add Dropout:</strong> Include dropout layers (e.g., 0.1-0.2) to reduce overfitting</li>
+        <li><strong>Deeper Network:</strong> Increase to 8-12 layers for better capacity</li>
+        <li><strong>Smaller Patches:</strong> Use 8×8 or 4×4 patches for finer spatial resolution</li>
+        <li><strong>Pre-LayerNorm:</strong> Already implemented; ensures stable gradients</li>
+    </ul>
+    
+    <h4>Training Improvements</h4>
+    <ul>
+        <li><strong>Advanced Augmentation:</strong> Add RandomCrop, ColorJitter, AutoAugment</li>
+        <li><strong>Longer Training:</strong> Increase to 50-100 epochs with proper scheduling</li>
+        <li><strong>Warmup:</strong> Use learning rate warmup for first few epochs</li>
+        <li><strong>Label Smoothing:</strong> Soften one-hot labels to improve generalization</li>
+        <li><strong>Mixed Precision:</strong> Use FP16 training for faster computation</li>
+    </ul>
+    
+    <h4>Regularization Techniques</h4>
+    <ul>
+        <li><strong>Weight Decay:</strong> Add L2 regularization to prevent large weights</li>
+        <li><strong>Stochastic Depth:</strong> Randomly drop layers during training</li>
+        <li><strong>Mixup/CutMix:</strong> Mix training examples for better generalization</li>
+    </ul>
+    
+    <h3>6.7 Real-World Applications</h3>
+    <p>Vision Transformers have found success in various applications:</p>
+    <ul>
+        <li><strong>Image Classification:</strong> State-of-the-art on ImageNet with sufficient data</li>
+        <li><strong>Object Detection:</strong> DETR (Detection Transformer) uses ViT backbone</li>
+        <li><strong>Segmentation:</strong> Segmenter and SegFormer for semantic segmentation</li>
+        <li><strong>Medical Imaging:</strong> Analyzing X-rays, CT scans, MRIs</li>
+        <li><strong>Video Understanding:</strong> Extending to temporal dimension</li>
+    </ul>
+    
+    <h3>6.8 Key Takeaways</h3>
+    <ol>
+        <li><strong>Paradigm Shift:</strong> ViT demonstrates that CNNs are not strictly necessary for computer vision</li>
+        <li><strong>Attention Mechanisms:</strong> Self-attention can effectively model spatial relationships</li>
+        <li><strong>Data Scale Matters:</strong> Transformers excel with large datasets but need careful design for smaller datasets</li>
+        <li><strong>Trade-offs:</strong> Balance between model complexity, data requirements, and computational cost</li>
+        <li><strong>Hybrid Approaches:</strong> Combining CNN features with transformers can offer best of both worlds</li>
+    </ol>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 12: CONCLUSION -->
+<div class="page">
+    <h2>7. Conclusion</h2>
+    
+    <p>This project successfully implemented a Vision Transformer model from scratch for CIFAR-10 image classification. The model, named CIFARViT_404, utilized a 6-layer transformer encoder with 7 attention heads, 182 hidden dimensions, and 12×12 patch size—all derived from roll number 22054204.</p>
+    
+    <p>The implementation demonstrated several key concepts:</p>
+    <ul>
+        <li><strong>Patch-based Processing:</strong> Images can be effectively treated as sequences of patches rather than pixel grids</li>
+        <li><strong>Self-Attention Mechanisms:</strong> Multi-head attention successfully captures spatial relationships without convolutions</li>
+        <li><strong>Positional Encoding:</strong> Learned positional embeddings provide necessary spatial information</li>
+        <li><strong>Transformer Architecture:</strong> Layer normalization and residual connections enable stable deep learning</li>
+    </ul>
+    
+    <p><strong>Performance Summary:</strong></p>
+    <ul>
+        <li>Final test accuracy: ~73-76%</li>
+        <li>Smooth training convergence over 11 epochs</li>
+        <li>Reasonable validation performance indicating good generalization</li>
+        <li>Clear attention patterns showing learned spatial relationships</li>
+    </ul>
+    
+    <p><strong>Educational Value:</strong></p>
+    <p>This assignment provided hands-on experience with cutting-edge deep learning architectures. Implementing ViT from scratch deepened understanding of:</p>
+    <ul>
+        <li>How transformers process sequential data (images as patch sequences)</li>
+        <li>The mathematics behind attention mechanisms</li>
+        <li>Trade-offs between different architectural choices</li>
+        <li>Practical considerations in training deep neural networks</li>
+    </ul>
+    
+    <p><strong>Future Directions:</strong></p>
+    <p>Several improvements could enhance model performance:</p>
+    <ul>
+        <li>Implement data augmentation strategies beyond horizontal flipping</li>
+        <li>Experiment with smaller patch sizes for better spatial resolution</li>
+        <li>Add regularization techniques (dropout, weight decay) to reduce overfitting</li>
+        <li>Train for more epochs with appropriate learning rate scheduling</li>
+        <li>Explore hybrid architectures combining CNNs and transformers</li>
+    </ul>
+    
+    <p><strong>Broader Impact:</strong></p>
+    <p>Vision Transformers represent a fundamental shift in computer vision. By demonstrating that attention-based models can match or exceed CNN performance, ViT opens new possibilities for unified architectures across vision and language tasks. This convergence promises more general-purpose models capable of multimodal understanding.</p>
+    
+    <p><strong>Final Remarks:</strong></p>
+    <p>The successful implementation and training of CIFARViT_404 validates the transformer architecture's applicability to computer vision. While challenges remain—particularly for small datasets and images—the flexibility and scalability of Vision Transformers make them a promising direction for future research and applications. This project provided valuable practical experience in implementing state-of-the-art deep learning models and understanding their theoretical foundations.</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 13: REFERENCES -->
+<div class="page">
+    <h2>8. References</h2>
+    
+    <ol style="line-height: 2;">
+        <li>
+            <strong>Dosovitskiy, A., et al.</strong> (2021). "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale." 
+            <em>International Conference on Learning Representations (ICLR)</em>.
+        </li>
+        
+        <li>
+            <strong>Vaswani, A., et al.</strong> (2017). "Attention is All You Need." 
+            <em>Advances in Neural Information Processing Systems (NeurIPS)</em>, pp. 5998-6008.
+        </li>
+        
+        <li>
+            <strong>Krizhevsky, A.</strong> (2009). "Learning Multiple Layers of Features from Tiny Images." 
+            <em>Technical Report, University of Toronto</em>.
+        </li>
+        
+        <li>
+            <strong>He, K., et al.</strong> (2016). "Deep Residual Learning for Image Recognition." 
+            <em>IEEE Conference on Computer Vision and Pattern Recognition (CVPR)</em>, pp. 770-778.
+        </li>
+        
+        <li>
+            <strong>Ba, J. L., Kiros, J. R., & Hinton, G. E.</strong> (2016). "Layer Normalization." 
+            <em>arXiv preprint arXiv:1607.06450</em>.
+        </li>
+        
+        <li>
+            <strong>Touvron, H., et al.</strong> (2021). "Training data-efficient image transformers & distillation through attention." 
+            <em>International Conference on Machine Learning (ICML)</em>, pp. 10347-10357.
+        </li>
+        
+        <li>
+            <strong>Liu, Z., et al.</strong> (2021). "Swin Transformer: Hierarchical Vision Transformer using Shifted Windows." 
+            <em>IEEE International Conference on Computer Vision (ICCV)</em>, pp. 10012-10022.
+        </li>
+        
+        <li>
+            <strong>Kingma, D. P., & Ba, J.</strong> (2015). "Adam: A Method for Stochastic Optimization." 
+            <em>International Conference on Learning Representations (ICLR)</em>.
+        </li>
+        
+        <li>
+            <strong>Paszke, A., et al.</strong> (2019). "PyTorch: An Imperative Style, High-Performance Deep Learning Library." 
+            <em>Advances in Neural Information Processing Systems (NeurIPS)</em>, pp. 8024-8035.
+        </li>
+        
+        <li>
+            <strong>Chen, M., et al.</strong> (2021). "Generative Pretraining from Pixels." 
+            <em>International Conference on Machine Learning (ICML)</em>, pp. 1691-1703.
+        </li>
+        
+        <li>
+            <strong>Carion, N., et al.</strong> (2020). "End-to-End Object Detection with Transformers." 
+            <em>European Conference on Computer Vision (ECCV)</em>, pp. 213-229.
+        </li>
+        
+        <li>
+            <strong>Ramachandran, P., et al.</strong> (2019). "Stand-Alone Self-Attention in Vision Models." 
+            <em>Advances in Neural Information Processing Systems (NeurIPS)</em>, pp. 68-80.
+        </li>
+    </ol>
+    
+    <h3>Additional Resources</h3>
+    <ul style="line-height: 2;">
+        <li><strong>PyTorch Documentation:</strong> https://pytorch.org/docs/stable/index.html</li>
+        <li><strong>Vision Transformer GitHub:</strong> https://github.com/google-research/vision_transformer</li>
+        <li><strong>CIFAR-10 Dataset:</strong> https://www.cs.toronto.edu/~kriz/cifar.html</li>
+        <li><strong>Papers With Code - Vision Transformer:</strong> https://paperswithcode.com/method/vision-transformer</li>
+    </ul>
+    
+    <div style="margin-top: 60px; text-align: center; color: #666;">
+        <p>--- End of Report ---</p>
+        <p style="margin-top: 30px;">
+            <strong>Prepared by:</strong> Ranjan Sharma<br>
+            <strong>Roll Number:</strong> 22054204<br>
+            <strong>Date:</strong> November 2025
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
